@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from uuid import uuid4
 
 import numpy as np
 from PIL import Image
@@ -19,8 +20,13 @@ def test_validate_image_quality_accepts_rgb_images() -> None:
     assert bool(validate_image_quality(image)) is True
 
 
-def test_preprocess_image_resizes(tmp_path: Path) -> None:
-    image_path = tmp_path / "test.jpg"
-    Image.new("RGB", (320, 240), color=(200, 50, 50)).save(image_path)
-    result = preprocess_image(image_path, None, PreprocessingConfig(image_size=128))
-    assert result.shape == (128, 128, 3)
+def test_preprocess_image_resizes() -> None:
+    temp_dir = Path(".tmp") / "test-artifacts"
+    temp_dir.mkdir(parents=True, exist_ok=True)
+    image_path = temp_dir / f"{uuid4().hex}.jpg"
+    try:
+        Image.new("RGB", (320, 240), color=(200, 50, 50)).save(image_path)
+        result = preprocess_image(image_path, None, PreprocessingConfig(image_size=128))
+        assert result.shape == (128, 128, 3)
+    finally:
+        image_path.unlink(missing_ok=True)

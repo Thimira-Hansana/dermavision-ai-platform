@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+import os
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
@@ -47,6 +48,25 @@ class TrainerConfig:
     early_stopping_patience: int = 3
     checkpoints_dir: Path = Path("models/checkpoints")
     mlflow_tracking_uri: str = "mlruns"
+
+
+def _configure_mlflow_tracking(tracking_uri: str) -> None:
+    """Allow local file-store tracking for single-machine development."""
+    normalized = tracking_uri.strip().lower()
+    if "://" not in normalized and not normalized.startswith("file:"):
+        os.environ.setdefault("MLFLOW_ALLOW_FILE_STORE", "true")
+    mlflow.set_tracking_uri(tracking_uri)
+
+
+def _mlflow_params(config: TrainerConfig) -> dict[str, str | int | float | bool]:
+    raw = asdict(config)
+    normalized: dict[str, str | int | float | bool] = {}
+    for key, value in raw.items():
+        if isinstance(value, Path):
+            normalized[key] = str(value)
+        else:
+            normalized[key] = value
+    return normalized
 
 
 def _build_optimizer(parameters: Any, config: TrainerConfig) -> Optimizer:
@@ -150,12 +170,12 @@ def train_model(config: TrainerConfig, device: torch.device) -> dict[str, Any]:
     best_path = config.checkpoints_dir / f"{config.model_name}_best.pt"
     history: list[dict[str, float]] = []
 
-    mlflow.set_tracking_uri(config.mlflow_tracking_uri)
+    _configure_mlflow_tracking(config.mlflow_tracking_uri)
     experiment = mlflow.set_experiment("dermavision-training")
     logger.info("Using MLflow experiment {}", experiment.name)
 
     with mlflow.start_run(run_name=config.model_name):
-        mlflow.log_params(config.__dict__)
+        mlflow.log_params(_mlflow_params(config))
         for epoch in range(1, config.epochs + 1):
             train_metrics = _run_epoch(
                 model,

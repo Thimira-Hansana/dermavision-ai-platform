@@ -4,6 +4,20 @@ DermaVision AI is a production-style skin lesion analysis project built around t
 
 This repository is for educational and research purposes only. It is not a medical device and must not be used for diagnosis, treatment, or medical advice.
 
+## Screenshot
+
+Prediction workflow and Grad-CAM result view:
+
+![DermaVision AI prediction page](docs/screenshots/prediction-page.png)
+
+Model performance dashboard:
+
+![DermaVision AI performance page](docs/screenshots/Performance.png)
+
+Project pipeline running in PowerShell:
+
+![DermaVision AI running in PowerShell](docs/screenshots/Running.png)
+
 ## Architecture
 
 ```text
@@ -140,6 +154,8 @@ Outputs:
 
 - best checkpoint in `models/checkpoints/`
 - MLflow run in `mlruns/`
+
+For local single-machine runs, the project automatically enables MLflow's file-store compatibility mode for the default `mlruns/` tracking directory.
 
 ## Evaluation
 

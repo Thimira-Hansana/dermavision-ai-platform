@@ -1,0 +1,52 @@
+project:
+  name: DermaVision AI
+  version: 0.1.0
+  description: Explainable skin lesion classification with HAM10000.
+
+paths:
+  data_dir: data
+  metadata_file: HAM10000_metadata.csv
+  image_dirs:
+    - HAM10000_images_part_1
+    - HAM10000_images_part_2
+  segmentation_dirs:
+    - HAM10000_segmentations
+    - segmentations
+  outputs_dir: outputs
+  reports_dir: reports
+  checkpoints_dir: models/checkpoints
+
+dataset:
+  val_size: 0.15
+  test_size: 0.15
+  image_size: 224
+  random_seed: 42
+  num_workers: 2
+  batch_size: 16
+  use_clahe: true
+  use_segmentation_crop: true
+
+training:
+  model_name: efficientnet_b0
+  learning_rate: 0.0003
+  weight_decay: 0.0001
+  epochs: 5
+  early_stopping_patience: 3
+  optimizer: adamw
+  scheduler: cosine
+  mixed_precision: true
+  gradient_clip: 1.0
+  sampler: weighted
+  loss: focal
+
+evaluation:
+  top_k: 3
+  export_reports: true
+
+inference:
+  max_upload_mb: 10
+  allowed_extensions:
+    - .png
+    - .jpg
+    - .jpeg
+  disclaimer: This application is for educational and research purposes only. It is not a medical device and must not be used as a substitute for professional medical diagnosis, treatment, or advice. Please consult a qualified dermatologist for medical concerns.

@@ -1,0 +1,17 @@
+stages:
+  train:
+    cmd: poetry run dermavision-train
+    deps:
+      - configs/config.yaml
+      - src/dermavision_ai
+      - scripts/train.py
+    outs:
+      - models/checkpoints
+  evaluate:
+    cmd: poetry run dermavision-evaluate
+    deps:
+      - models/checkpoints
+      - src/dermavision_ai
+      - scripts/evaluate.py
+    outs:
+      - reports/figures

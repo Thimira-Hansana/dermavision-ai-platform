@@ -1,0 +1,85 @@
+[tool.poetry]
+name = "dermavision-ai"
+version = "0.1.0"
+description = "Explainable skin lesion classification system built on HAM10000."
+authors = ["NGC <ngc@example.com>"]
+readme = "README.md"
+packages = [
+  { include = "dermavision_ai", from = "src" },
+  { include = "scripts" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.116.0"
+uvicorn = { extras = ["standard"], version = "^0.35.0" }
+pydantic = "^2.11.0"
+pydantic-settings = "^2.10.0"
+sqlalchemy = "^2.0.41"
+aiosqlite = "^0.21.0"
+python-multipart = "^0.0.20"
+numpy = "^2.3.1"
+pandas = "^2.3.0"
+scikit-learn = "^1.7.0"
+pillow = "^11.3.0"
+pyyaml = "^6.0.2"
+loguru = "^0.7.3"
+prometheus-client = "^0.22.1"
+matplotlib = "^3.10.3"
+seaborn = "^0.13.2"
+opencv-python-headless = "^4.12.0.88"
+albumentations = "^2.0.8"
+timm = "^1.0.17"
+torch = "^2.7.1"
+torchvision = "^0.22.1"
+optuna = "^4.4.0"
+mlflow = "^3.1.1"
+onnx = "^1.18.0"
+onnxruntime = "^1.22.0"
+httpx = "^0.28.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.4.1"
+pytest-asyncio = "^1.0.0"
+black = "^25.1.0"
+ruff = "^0.12.2"
+mypy = "^1.16.1"
+pre-commit = "^4.2.0"
+types-PyYAML = "^6.0.12.20250516"
+
+[tool.poetry.scripts]
+dermavision-train = "scripts.train:main"
+dermavision-evaluate = "scripts.evaluate:main"
+dermavision-export = "scripts.export_model:main"
+
+[build-system]
+requires = ["poetry-core>=1.9.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "backend", "tests", "scripts"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "N", "S", "A", "C4", "SIM", "RUF"]
+ignore = ["B008", "E501", "N812", "S101", "S104", "SIM401", "UP038"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = ["S101"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "."]
+addopts = "-q"
+testpaths = ["tests"]
+
+[tool.mypy]
+python_version = "3.12"
+plugins = []
+strict = true
+warn_unused_configs = true
+exclude = ["frontend", "notebooks"]

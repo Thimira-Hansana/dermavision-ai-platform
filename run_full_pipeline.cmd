@@ -9,6 +9,10 @@ set "SKIP_TRAINING="
 set "SKIP_EVALUATION="
 set "SKIP_EXPORT="
 set "NO_SERVERS="
+set "RUN_ID=%RANDOM%%RANDOM%%RANDOM%"
+set "WORK_TMP=%CD%\.tmp"
+set "PYTEST_TEMP=%WORK_TMP%\pytest-%RUN_ID%"
+set "PYTEST_CACHE=%WORK_TMP%\.pytest_cache-%RUN_ID%"
 
 :parse_args
 if "%~1"=="" goto args_done
@@ -27,6 +31,11 @@ echo DermaVision AI Full Pipeline
 echo ============================
 echo Root: %CD%
 echo.
+
+if not exist "%WORK_TMP%" mkdir "%WORK_TMP%"
+set "TMP=%WORK_TMP%"
+set "TEMP=%WORK_TMP%"
+set "MLFLOW_ALLOW_FILE_STORE=true"
 
 where python >nul 2>nul
 if errorlevel 1 (
@@ -68,7 +77,7 @@ if not defined SKIP_INSTALL (
 if not defined SKIP_TESTS (
   echo.
   echo [STEP] Running backend tests
-  python -m poetry run pytest tests -q
+  python -m poetry run pytest tests -q -p no:cacheprovider --basetemp="%PYTEST_TEMP%"
   if errorlevel 1 exit /b 1
 ) else (
   echo [INFO] Skipping tests

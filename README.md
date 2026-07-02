@@ -10,6 +10,10 @@ Prediction workflow and Grad-CAM result view:
 
 ![DermaVision AI prediction page](docs/screenshots/prediction-page.png)
 
+Model performance dashboard:
+
+![DermaVision AI performance page](docs/screenshots/Performance.png)
+
 ## Architecture
 
 ```text

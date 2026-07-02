@@ -14,6 +14,10 @@ Model performance dashboard:
 
 ![DermaVision AI performance page](docs/screenshots/Performance.png)
 
+Project pipeline running in PowerShell:
+
+![DermaVision AI running in PowerShell](docs/screenshots/Running.png)
+
 ## Architecture
 
 ```text
